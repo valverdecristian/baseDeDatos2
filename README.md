@@ -85,3 +85,15 @@ BSON se almacena en forma binaria, lo que lo hace más eficiente en terminos de 
 ### Agregación (BBDD2 UTN)
 
 ### [📍 Operadores](operadores.md)
+
+### 📍 Proyeccion (Project)
+
+Permite elegir que campos mostrar u ocultar en los resultados de una consulta.
+* 1: mostrar
+* 0: ocultar
+* por defecto, MongoDB siempre muestra el campo _id
+
+* Ejemplo: Mostrar solo nombre y edad:
+```javascript
+db.usuarios.find({}, { nombre: 1, edad: 1, _id: 0 })
+```

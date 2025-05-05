@@ -22,16 +22,17 @@
 
 ### 📍 Operadores de actualizacion
 
-| Operador    | Función                        | Ejemplo                                       |
-| ----------- | ------------------------------ | --------------------------------------------- |
-| `$set`      | Establece un nuevo valor       | `{ $set: { nombre: "Juan" } }`                |
-| `$unset`    | Elimina un campo               | `{ $unset: { direccion: "" } }`               |
-| `$inc`      | Incrementa numéricamente       | `{ $inc: { visitas: 1 } }`                    |
-| `$mul`      | Multiplica el valor            | `{ $mul: { precio: 1.1 } }`                   |
-| `$rename`   | Cambia el nombre de un campo   | `{ $rename: { nombreViejo: "nombreNuevo" } }` |
-| `$push`     | Agrega un elemento a un array  | `{ $push: { generos: "terror" } }`            |
-| `$pull`     | Quita un elemento de un array  | `{ $pull: { generos: "drama" } }`             |
-| `$addToSet` | Agrega a un array si no existe | `{ $addToSet: { generos: "aventura" } }`      |
+| Operador      | Función                        | Ejemplo                                       |
+| ------------- | ------------------------------ | --------------------------------------------- |
+| `$set`        | Establece un nuevo valor       | `{ $set: { nombre: "Juan" } }`                |
+| `$unset`      | Elimina un campo               | `{ $unset: { direccion: "" } }`               |
+| `$inc`        | Incrementa numéricamente       | `{ $inc: { visitas: 1 } }`                    |
+| `$mul`        | Multiplica el valor            | `{ $mul: { precio: 1.1 } }`                   |
+| `$rename`     | Cambia el nombre de un campo   | `{ $rename: { nombreViejo: "nombreNuevo" } }` |
+| `$push`       | Agrega un elemento a un array  | `{ $push: { generos: "terror" } }`            |
+| `$pull`       | Quita un elemento de un array  | `{ $pull: { generos: "drama" } }`             |
+| `$addToSet`   | Agrega a un array si no existe | `{ $addToSet: { generos: "aventura" } }`      |
+| `$currentDate`| Establece fecha y hora actual  | `{ $currentDate: { fechaModif: "true" } }`    |
 
 ### 📍 Operadores de elementos
 
@@ -47,3 +48,11 @@
 | `$all`       | Todos los elementos deben coincidir                        | `{ tags: { $all: ["js", "mongo"] } }`             |
 | `$size`      | Coincide con la cantidad de elementos                      | `{ autores: { $size: 2 } }`                       |
 | `$elemMatch` | Coincide con al menos un elemento que cumpla una condición | `{ notas: { $elemMatch: { nota: { $gt: 7 } } } }` |
+| `$push`              | Agrega un elemento al final del array                             | `{ $push: { items: "nuevo" } }`                                    |
+| `$addToSet`          | Agrega un elemento **solo si no existe** en el array              | `{ $addToSet: { tags: "mongo" } }`                                 |
+| `$pull`              | Elimina todos los elementos que coincidan con una condición       | `{ $pull: { scores: { $lt: 5 } } }`                                |
+| `$pop`               | Elimina el **primer (`-1`) o último (`1`)** elemento del array    | `{ $pop: { items: 1 } }`                                           |
+| `$pullAll`           | Elimina **todos los valores específicos** del array               | `{ $pullAll: { tags: ["js", "mongo"] } }`                          |
+| `$[]`                | Placeholder que representa **todos los elementos** del array      | `{ "items.$[]": { $set: { status: "activo" } } }`                  |
+| `$[<identificador>]` | Placeholder para elementos que cumplen un filtro (`arrayFilters`) | `{ "items.$[item]": { $set: { estado: "ok" } } }` + `arrayFilters` |
+

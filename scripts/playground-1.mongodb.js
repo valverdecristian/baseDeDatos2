@@ -47,4 +47,5 @@ db.libros.insertMany([
 
 db.libros.find({ejemplares: 3});
 
+console.log("tarea realizada");
 // db.dropDatabase()
