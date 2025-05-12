@@ -28,35 +28,57 @@
     - Para crear una nueva coleccion. No es estrictamente necesario usarlo, con insertOne logro lo mismo.
     - deberia salir `{ok: 1}`.
 
+
 * `db.mi_coleccion.insertOne({clave: valor, clave: valor})`
     - ➕ Para insertar un elemento.
     - la clave se escribe sin comillas.
     - 🔁 Puedo crear varios objetos con mismas clave:valor, pero estos tendran un `_id` diferente.
 
-* `db.usuarios.insertMany([{clave:valor, ...},{otroObj...}])`
-    - Inserta multiples documentos.
+* `db.usuarios.insertMany([{clave:valor, ...},{otroDocumento...}])`
+    - Inserta una lista de documentos.
+    - si hay algun error en algun lugar no se inserta ningun documento.
+
 
 * `db.mi_coleccion.find()`
     - Para listar todos los documentos que tenemos en nuestra coleccion.
 
-* `db.mi_coleccion.find({campo:valor,...})`
-    - Devuelve solo los documentos donde el campo tenga el valor indicado.
+* `db.mi_coleccion.find(FILTRO)`
+    - Devuelve solo los documentos donde el campo tenga el valor exactamente indicado.
     ```js
     // devuelve todos los documentos donde nombre sea "Cristian"
     db.usuarios.find({ nombre: "Cristian" })
     ```
 
-* `db.mi_coleccion.findOne({campo:"valor"})`
-    - Devuelve un solo elemento.
-
 * Uso con operadores logicos: $gt, $lt, $in, $or
     ```js
     // Buscar usuarios mayores a 25 años
     db.usuarios.find({ edad: { $gt: 25 } })
+    // Buscar usuarios mayores o igual a 25 y menor o igual que 35
+    db.usuarios.find({ edad: { $gte:25, $lte:35 }})
 
     // Buscar usuarios que vivan en Avellaneda o Lanús
     db.usuarios.find({ ciudad: { $in: ["Avellaneda", "Lanús"] } })
     ```
+
+* db.mi_coleccion.find(filtro, proyecciones)
+    - La proyeccion me sirve para poder indicar que atributos de cada elemento deseo obtener.
+    - 0 para no mostrar el campo y 1 para mostrarlo
+
+```js
+db.usuarios.find({}).forEach(function(usuario){
+    print(usuario.nombre)
+})
+```
+    - db.usuarios.find({}).limit(cantidad)
+    - db.usuarios.find({}).skip(cantDocNoObtenido).limit(proxElementosQueMuestra)
+    - db.usuarios.find({}).sort({edad:-1/1}) // asc/desc
+    - db.usuarios.find({},{_id:0, nombre:1, correo:1})
+    - proyeccion anidada: ({}, {_id:0, "libro.titulo":1 })
+
+
+* `db.mi_coleccion.findOne({campo:"valor"})`
+    - Devuelve un solo elemento.
+
 
 * `db.mi_coleccion.updateOne({filtro},{$set:{campo:nuevo_valor}})`
     - Actualiza el primer elemento que contenga el valor indicado en el filtro.
@@ -68,19 +90,30 @@
     )
     ```
 
+
 * `db.mi_coleccion.updateMany({filtro},{$set:{campo:nuevo_valor}})`
     - Si el documento no existe, lo inserto con `upsert:true` (que va como 3er parametro)
 
-* `db.mi_coleccion.replaceOne()`
-    - Reemplaza totalmente un documento.
+
+* `db.mi_coleccion.replaceOne(filtro, documento)`
+    - Reemplaza totalmente un documento. En la parte de documento debo colocar todos los campos que necesitara mi nuevo docuemnto.
+
+
+* `db.mi_coleccion.update(filtro, actualizacion, opciones)`
+    - La parte de filtro y actualizacion es lo mismo que el updateOne
+    - en la parte de opciones puedo agregar `{multi: true}` que actualizara varios registros.
+    - Aparecera un warning porque esta obsoleto y para eso se usa updateMany
+
 
 * `db.mi_coleccion.deleteOne({filtro})`
     - Elimina la primera coincidencia que encuentra en la coleccion.
     - Para eliminar todos los documentos `deleteMany({})` (se pasa un objeto vacio)
     - La ejecucion del metodo deleteOne y deleteMany informa la cantidad de docs eliminados.
 
+
 * `db.mi_coleccion.drop()`
     - Eliminar los documentos de una coleccion y la coleccion propiamente dicha.
+
 
 * `db.dropDatabase()`
     - Elimina una base de datos de forma completa

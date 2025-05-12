@@ -56,3 +56,23 @@
 | `$[]`                | Placeholder que representa **todos los elementos** del array      | `{ "items.$[]": { $set: { status: "activo" } } }`                  |
 | `$[<identificador>]` | Placeholder para elementos que cumplen un filtro (`arrayFilters`) | `{ "items.$[item]": { $set: { estado: "ok" } } }` + `arrayFilters` |
 
+
+### 📍 Operadores de etapa en Agregación (`aggregate`)
+
+Los operadores de esta sección **solo se usan dentro de `aggregate()`**, formando parte de la tubería (`pipeline`).
+
+| Operador        | Función                                                      | Ejemplo básico |
+|-----------------|--------------------------------------------------------------|----------------|
+| `$match`        | Filtra documentos (como `find`, pero dentro de `aggregate`)  | `{ $match: { tipo: "Drama" } }` |
+| `$project`      | Muestra, oculta o transforma campos                          | `{ $project: { titulo: 1, _id: 0 } }` |
+| `$group`        | Agrupa documentos y permite sumar, contar, etc.              | `{ $group: { _id: "$tipo", total: { $sum: 1 } } }` |
+| `$sort`         | Ordena documentos                                             | `{ $sort: { year: -1 } }` |
+| `$sortByCount`  | Agrupa por un campo y ordena por cantidad de ocurrencias     | `{ $sortByCount: "$tipo" }` |
+| `$count`        | Devuelve la cantidad total de documentos resultantes         | `{ $count: "total" }` |
+| `$limit`        | Limita la cantidad de documentos que devuelve                | `{ $limit: 5 }` |
+| `$skip`         | Salta los primeros N documentos                              | `{ $skip: 10 }` |
+| `$lookup`       | Une documentos de otra colección (similar a un JOIN)         | `{ $lookup: { from: "autores", localField: "autor_id", foreignField: "_id", as: "autor_info" } }` |
+| `$unwind`       | Descompone arrays en varios documentos individuales          | `{ $unwind: "$generos" }` |
+| `$addFields`    | Agrega nuevos campos al documento                            | `{ $addFields: { año_str: { $toString: "$year" } } }` |
+| `$replaceRoot`  | Reemplaza el documento completo por un subdocumento          | `{ $replaceRoot: { newRoot: "$detalles" } }` |
+| `$facet`        | Ejecuta múltiples pipelines paralelas                        | Usado para estadísticas múltiples |

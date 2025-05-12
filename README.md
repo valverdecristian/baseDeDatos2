@@ -10,7 +10,11 @@
 * Documentales: ideales para datos semi-estructurados. (`mongoDB`).
 * Columnares: exelentes para analisis de datos.
 * Clave-valor: eficientes para operaciones de lectura/escritura rápidas.
-* Graficas: diseñadas para datos relacionales y complejos.
+* Grafos: diseñadas para datos relacionales y complejos.
+* Series temporales: optimizadas para almacenar datos por fecha y hora (ej.: sensores IoT).
+* Basadas en objetos: guardan objetos completos con relaciones entre sí.
+* Índice externo: manejan datos que están almacenados fuera de la base.
+
 
 ### 📍 Ventajas de las bases de datos NoSQL
 
@@ -25,8 +29,10 @@
 * Analisis de big data: flexibilidad en el manejo de datos no estructurados.
 * Aplicaciones moviles: rendimiento y escalabilidad.
 
+
 ### 📍 ¿Que es MongoDB?
 Es un sistema de gestión de bases de datos NoSQL de codigo abierto que almacena datos en formato BSON (Binary JSON) y utiliza un modelo de documentos.
+
 
 ### 📍 Controladores (drivers) en MongoDB
 Son componentes de software que permiten a las aplicaciones interactuar con una base de datos MongoDB. <br>
@@ -34,19 +40,22 @@ Son esenciales para simplificar la comunicacion entre la aplicacion y la base de
 MongoDB ofrece controladores para una variedad de lenguajes populares. Ejemplo: Node.js, python, Java, C#, PHP. <br>
 ✅ En conclusión, los controladores facilitan la conexión, las operaciones CRUD y la gestión de datos en MongoDB. <br>
 
-### [📍 Comandos](comandos.md)
 
 ### 📍 Conexión a MongoDB desde PowerShell (mongosh)
 
 * Abrir PowerShell
 * Ejecutar el comando
+
 ```bash
 mongosh
 ```
 * Conectarse a una base especifica
 ```bash
-use database
+use nombre_de_la_base
 ```
+
+
+### [📍 Comandos y Operaciones](comandosyoperaciones.md)
 
 ### 📍 Archivos JSON en MongoDB
 
@@ -80,13 +89,7 @@ BSON se almacena en forma binaria, lo que lo hace más eficiente en terminos de 
 ✅ En resumen, MongoDB utiliza tanto JSON como BSON para representar y almacenar datos. JSON es legible por humanos y ampliamente compatible, mientras que BSON proporciona eficiencia en almacenamiento y procesamiento, ademas de administrar tipos de datos adicionales. Esta combinacion hace que MongoDB sea flexible y eficiente para administrar datos en una variedad de aplicaciones. <br>
 
 
-## SECCION 3 del curso (14)
-
-### Agregación (BBDD2 UTN)
-
-### [📍 Operadores](operadores.md)
-
-### 📍 Proyeccion (Project)
+### 📍 Proyección ($project)
 
 Permite elegir que campos mostrar u ocultar en los resultados de una consulta.
 * 1: mostrar
@@ -97,3 +100,80 @@ Permite elegir que campos mostrar u ocultar en los resultados de una consulta.
 ```javascript
 db.usuarios.find({}, { nombre: 1, edad: 1, _id: 0 })
 ```
+
+### [📍 Operadores](operadores.md)
+
+
+## 📚 Agregación en MongoDB
+La agregación permite realizar consultas más poderosas que find(), como filtros encadenados, agrupamientos, ordenamientos y proyecciones personalizadas.
+
+- `db.libros.agregate([{$match:{campo:valor}}])`
+
+- `db.libros.agregate([{$match:{campo:valor}}, {$sort:{orden1-1}}])`
+
+
+### 📍 Tuberia de Agregacion (aggregation pipeline)
+
+Utilizamos el metodo `aggregate` de la coleccion sobre la cual deseamos realizar las operaciones.
+   
+* `db.mi_coleccion.aggregate([{etapa},{etapa}]);`
+    - Cada etapa representa una operacion a realizar
+    - Cada etapa esta compuesta por un `operador de etapa` que representa una funcion.
+
+### 📍 Etapas:
+
+```js
+Entrada → $match → $group → $sort → $project → Salida
+```
+
+- $match: filtra los docs con los que necesitamos trabajar.
+- $group: realiza el trabajo de agregacion
+    1) Le tengo que indicar que es lo que quiero agrupar (valor) y eso lo voy a poner en un campo que se llama _id:
+- $sort: ordena los docs de forma asc o desc
+- $project: permite mostrar solo ciertos campos, renombrarlos o calcular nuevos
+
+### 🧪 Ejemplos prácticos
+
+1. Filtrar y ordenar
+```js
+db.libros.aggregate([
+  { $match: { tipo: "Fantasía" } },
+  { $sort: { year: -1 } }
+])
+```
+
+2. Filtrar, agrupar, contar y ordenar
+```js
+db.libros.aggregate([
+  { $match: { year: { $gte: 2000 } } },
+  { $group: { _id: "$type", cantidad: { $sum: 1 } } },
+  { $sort: { cantidad: -1 } }
+])
+```
+
+3. Usando $project: ocultar campo y renombrar o "desanidar" campos internos
+```js
+db.libros.aggregate([
+  { $project: { _id: 0, titulo: "$libro.titulo", autor: "$libro.autor" } }
+])
+```
+
+### 📍 Funcion MapReduce
+
+MongoDB también tiene una función llamada `MapReduce`, usada para procesamientos más complejos.
+Pero hoy en día, se recomienda usar `aggregate()`, ya que es más eficiente y legible.
+
+
+## Backups
+
+* Crear backup en una carpeta especifica
+
+``` bash
+mongodump --db nombre_db --out .
+```
+
+``` bash
+mongorestore --db nombre_restaurado nombre_db
+```
+
+## SECCION 4 del curso (21)
