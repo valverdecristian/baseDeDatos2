@@ -206,6 +206,17 @@ db.libros.aggregate([
 
 
 // listar el promedio de calificaciones
+db.libros.aggregate([
+  {
+    $unwind: "$comentarios"
+  },
+  {
+    $group: {
+      _id: "$libro.titulo",
+      promedio_calificacion: { $avg: "$comentarios.calificacion" }
+    }
+  }
+])
 
 
 // listar la cantidad de comentarios por libro
