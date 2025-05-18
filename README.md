@@ -1,4 +1,6 @@
-# MongoDB (Udemy) ✅📍👉💡📢
+# MongoDB (Udemy) 💡📢
+
+---
 
 ## 📌 ¿Que significa NoSQL?
 
@@ -54,6 +56,7 @@ mongosh
 use nombre_de_la_base
 ```
 
+---
 
 ### [📍 Comandos y Operaciones](comandosyoperaciones.md)
 
@@ -88,6 +91,7 @@ BSON se almacena en forma binaria, lo que lo hace más eficiente en terminos de 
 
 ✅ En resumen, MongoDB utiliza tanto JSON como BSON para representar y almacenar datos. JSON es legible por humanos y ampliamente compatible, mientras que BSON proporciona eficiencia en almacenamiento y procesamiento, ademas de administrar tipos de datos adicionales. Esta combinacion hace que MongoDB sea flexible y eficiente para administrar datos en una variedad de aplicaciones. <br>
 
+---
 
 ### 📍 Proyección ($project)
 
@@ -101,10 +105,13 @@ Permite elegir que campos mostrar u ocultar en los resultados de una consulta.
 db.usuarios.find({}, { nombre: 1, edad: 1, _id: 0 })
 ```
 
+---
+
 ### [📍 Operadores](operadores.md)
 
+---
 
-## 📚 Agregación en MongoDB
+### 📚 Agregación en MongoDB
 La agregación permite realizar consultas más poderosas que find(), como filtros encadenados, agrupamientos, ordenamientos y proyecciones personalizadas.
 
 - `db.libros.agregate([{$match:{campo:valor}}])`
@@ -158,13 +165,9 @@ db.libros.aggregate([
 ])
 ```
 
-### 📍 Funcion MapReduce
+---
 
-MongoDB también tiene una función llamada `MapReduce`, usada para procesamientos más complejos.
-Pero hoy en día, se recomienda usar `aggregate()`, ya que es más eficiente y legible.
-
-
-## Backups
+### 📍 Backups
 
 * Crear backup en una carpeta especifica
 
@@ -172,8 +175,161 @@ Pero hoy en día, se recomienda usar `aggregate()`, ya que es más eficiente y l
 mongodump --db nombre_db --out .
 ```
 
+* Para restaurar
 ``` bash
-mongorestore --db nombre_restaurado nombre_db
+mongorestore --db nombre_restaurado nombre_nueva_db
 ```
 
-## SECCION 4 del curso (21)
+---
+
+### 📍 Schema (Esquema) en MongoDB
+
+Un **schema** es un conjunto de reglas que define la estructura de los documentos en una base de datos.
+
+En MongoDB, el esquema **es flexible por naturaleza**, es decir, **no se requiere una estructura fija** para cada documento, a diferencia de bases de datos relacionales.
+
+### 🧱 Tipos de esquema:
+
+#### 🧩 Esquema Fijo (Rigid Schema)
+- Todos los documentos siguen la misma estructura.
+- Mayor integridad de datos.
+- Consultas más rápidas y consistentes.
+- Menor flexibilidad (cambios de estructura requieren migración de datos).
+- Más común en bases de datos relacionales.
+
+#### 🌀 Esquema Flexible (Flexible Schema)
+- Los documentos **pueden tener distinta forma** dentro de la misma colección.
+- Ideal para aplicaciones que evolucionan rápido.
+- Fácil de adaptar a nuevas necesidades.
+- Requiere validaciones manuales para mantener integridad.
+- MongoDB utiliza este enfoque por defecto.
+
+---
+
+### ✅ Validación de esquema en MongoDB
+
+Aunque MongoDB permite esquemas flexibles, también podés:
+- **Definir validaciones** usando `validator` al crear colecciones.
+- **Aplicar reglas de estructura**, tipos de datos y requerimientos mínimos por campo.
+
+📋 Ejemplo de validación:
+```js
+db.createCollection("usuarios", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["nombre", "edad"],
+      properties: {
+        nombre: { bsonType: "string" },
+        edad: { bsonType: "int", minimum: 0 }
+      }
+    }
+  }
+})
+```
+
+### 📍 Tipos de Datos en MongoDB
+
+MongoDB utiliza un formato llamado **BSON** (Binary JSON), que extiende JSON agregando tipos adicionales como fechas, enteros y binarios.
+
+Conocer los tipos de datos es importante para:
+- Validar esquemas.
+- Hacer consultas más precisas.
+- Optimizar el almacenamiento.
+
+---
+
+#### 📦 Tipos de datos más comunes:
+
+| Tipo BSON      | Descripción                                 | Ejemplo                                |
+|----------------|---------------------------------------------|----------------------------------------|
+| `String`       | Cadenas de texto                            | `"nombre": "Juan"`                     |
+| `NumberInt`    | Números enteros de 32 bits                  | `"edad": NumberInt(30)`                |
+| `NumberLong`   | Números enteros de 64 bits                  | `"saldo": NumberLong(9000000000)`      |
+| `Double`       | Números decimales                           | `"precio": 19.99`                      |
+| `Boolean`      | Verdadero o falso                           | `"activo": true`                       |
+| `Date`         | Fecha y hora                                | `"fecha": ISODate("2024-05-01T00:00:00Z")` |
+| `Array`        | Lista ordenada de elementos                 | `"etiquetas": ["node", "mongo", "api"]` |
+| `Object`       | Documento embebido                          | `"direccion": { "calle": "X", "cp": 1234 }` |
+| `ObjectId`     | Identificador único generado automáticamente| `"_id": ObjectId("24caracteresHexadecimales")`               |
+| `Null`         | Valor nulo                                  | `"telefono": null`                     |
+| `Binary`       | Datos binarios                              | (usado en archivos, imágenes, etc.)    |
+
+---
+
+### 🧪 ¿Cómo consultar el tipo de un campo?
+
+Usá el operador `$type`:
+
+```js
+db.usuarios.find({ edad: { $type: "int" } })
+```
+
+---
+
+### 📍 Relaciones en MongoDB
+
+MongoDB no utiliza claves foráneas como en bases de datos relacionales, pero **sí permite representar relaciones entre documentos**, ya sea mediante **referencias** o **documentos embebidos**.
+
+---
+
+### 🔗 Tipos de relaciones
+
+#### 🔸 1. Uno a Uno (1:1)
+- Un documento está relacionado con exactamente uno de otra colección.
+- Puede representarse **embebiendo** el documento relacionado.
+- 🧪 Ejemplo: un libro tiene un único autor:
+
+```json
+{
+  titulo: "Rayuela",
+  autor: {
+    nombre: "Julio Cortázar",
+    nacionalidad: "Argentina"
+  }
+}
+```
+
+#### 🔸 2. Uno a Muchos (1:N) 
+- Un documento se relaciona con varios documentos de otra coleccion.
+- Puede representarse embebiendo un array de documentos o mediante referencias con ObjectId.
+- 🧪 Ejemplo embebido: comentarios dentro de un libro:
+
+```json
+{
+  titulo: "1984",
+  comentarios: [
+    { texto: "Excelente", calificacion: 5 },
+    { texto: "Muy bueno", calificacion: 4 }
+  ]
+}
+```
+
+
+#### 🔸 3. Muchos a Muchos (N:M) 
+- Varios documentos en una colección están relacionados con varios en otra.
+- Se suele representar con referencias cruzadas o una colección intermedia.
+- 🧪 Ejemplo: libros y géneros (un libro puede tener varios géneros y un género varios libros):
+
+```json
+{
+  titulo: "El Hobbit",
+  generos: ["Fantasía", "Aventura"]
+}
+```
+
+### ⚖️ Ventajas y desventajas de las relaciones en MongoDB
+✅ Ventajas
+- Mejora la organización y legibilidad de los datos.
+- Permite consultas eficientes cuando los datos relacionados se consultan juntos.
+- Facilita el mantenimiento de la integridad si se usa embebido.
+- Simplifica integración con sistemas heredados.
+- Puede ayudar con requisitos de privacidad al separar datos sensibles.
+
+❌ Desventajas
+- Si no se diseña bien, puede aumentar la complejidad del modelo.
+- Documentos grandes embebidos pueden afectar el rendimiento.
+- En relaciones con muchos datos, los documentos embebidos se vuelven difíciles de mantener.
+- Requiere planificación cuidadosa para decidir cuándo embeber o referenciar.
+
+## SECCION 4 del curso (29)

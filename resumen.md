@@ -29,10 +29,28 @@ Entrada → $match → $group → $sort → $project → Salida
 ```
 
 - $match: filtra los docs con los que necesitamos trabajar.
+- $count: obtener el numero de docs filtrados y el valor entre comillas es el nombre del campo que aparecera en el resultado final (alias) **ver ejemplo** 
 - $group: realiza el trabajo de agregacion
     1) Le tengo que indicar que es lo que quiero agrupar (valor) y eso lo voy a poner en un campo que se llama _id:
 - $sort: ordena los docs de forma asc o desc
-- $project: permite mostrar solo ciertos campos, renombrarlos o calcular nuevos (0 y 1)
+- $project: permite mostrar solo ciertos campos, renombrarlos (alias) o calcular nuevos (0 y 1)
+    - $concat: operador de string para formatear el resultado
+
+```js
+db.estudiantes.aggregate([
+  { $match: { edad: { $lt: 20 } } },
+  { $count: "Estudiantes menores a 20 años" }
+])
+
+// resultado
+[
+  { "Estudiantes menores a 20 años": 7 }
+]
+
+// sintaxis: project
+{ $project: { campo_nuevo: "$campo_original", ... } }
+
+```
 
 ### El Replica Set
 * Conjunto de servidores, uno primario y varios secundarios.
