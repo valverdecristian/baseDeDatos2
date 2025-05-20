@@ -296,3 +296,36 @@ db.libros.aggregate([
     }
   }
 ])
+
+// relacionar la coleccion de usuarios con la de libros
+db.usuarios.aggregate([
+  {
+    $lookup: {
+      from: "movimientos",
+      localField: "_id",
+      foreignField: "usuario_id",
+      as: "prestamos"
+    }
+  },
+  {
+    $unwind: "$prestamos"
+  },
+  {
+    $lookup: {
+      from: "libros",
+      localField: "prestamos.libro_id",
+      foreignField: "_id",
+      as: "libro"
+    }
+  },
+  {
+    $unwind: "$libro"
+  },
+  {
+    $project: {
+      nombre_usuario: { $concat: ["$nombre", " ", "$apellido"] },
+      libro_titulo: "$libro.libro.titulo",
+      fecha_prestamo: "$prestamos.fecha"
+    }
+  }
+])

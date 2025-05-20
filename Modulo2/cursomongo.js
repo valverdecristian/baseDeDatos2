@@ -9,28 +9,74 @@ db.empleados.insertMany([
 ])
 
 // Validacion de la coleccion productos
-db.createCollection("productos", {
-  validator: {
-    $jsonSchema: {
-      bsonType: "object",
-      required: ["Nombre", "Cantidad", "Precio"],
-      properties: {
-        Nombre: {
-          bsonType: "string",
-          description: "Es una cadena de caracteres"
-        },
-        Cantidad: {
-          bsonType: "int",
-          minimum: 0,
-          description: "Debe ser un entero"
-        },
-        Precio: {
-          bsonType: "double",
-          description: "Es un número real"
-        }
-      }
-    }
-  }
-})
+// db.createCollection("productos", {
+//   validator: {
+//     $jsonSchema: {
+//       bsonType: "object",
+//       required: ["Nombre", "Cantidad", "Precio"],
+//       properties: {
+//         Nombre: {
+//           bsonType: "string",
+//           description: "Es una cadena de caracteres"
+//         },
+//         Cantidad: {
+//           bsonType: "int",
+//           minimum: 0,
+//           description: "Debe ser un entero"
+//         },
+//         Precio: {
+//           bsonType: "double",
+//           description: "Es un número real"
+//         }
+//       }
+//     }
+//   }
+// })
 
-// relaciones entre nuestros distintos documentos
+// crear 5 productos con los campos requeridos
+db.productos.insertMany([
+    {Nombre: "Laptop", Cantidad: 10, Precio: 800.50 },
+    {Nombre: "Mouse", Cantidad: 50, Precio: 20.00 },
+    {Nombre: "Teclado", Cantidad: 30, Precio: 35.00 },
+    {Nombre: "Monitor", Cantidad: 15, Precio: 200.00 },
+    {Nombre: "Impresora", Cantidad: 5, Precio: 150.00 }
+])
+
+// REDEFINIDO
+// 1. Eliminar la colección si ya existe
+db.productos.drop();
+
+// 2. Crear la colección con validador
+// db.createCollection("productos", {
+//   validator: {
+//     $jsonSchema: {
+//       bsonType: "object",
+//       required: ["Nombre", "Cantidad", "Precio"],
+//       properties: {
+//         Nombre: {
+//           bsonType: "string",
+//           description: "Debe ser una cadena de texto"
+//         },
+//         Cantidad: {
+//           bsonType: "int",
+//           minimum: 0,
+//           description: "Debe ser un número entero mayor o igual a 0"
+//         },
+//         Precio: {
+//           bsonType: "double",
+//           minimum: 0,
+//           description: "Debe ser un número decimal positivo"
+//         }
+//       }
+//     }
+//   }
+// });
+
+// 3. Insertar productos válidos
+db.productos.insertMany([
+  { Nombre: "Laptop", Cantidad: NumberInt(10), Precio: 800.50 },
+  { Nombre: "Mouse", Cantidad: NumberInt(50), Precio: 20.00 },
+  { Nombre: "Teclado", Cantidad: NumberInt(30), Precio: 35.00 },
+  { Nombre: "Monitor", Cantidad: NumberInt(15), Precio: 200.00 },
+  { Nombre: "Impresora", Cantidad: NumberInt(5), Precio: 150.00 }
+]);
