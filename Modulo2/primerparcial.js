@@ -215,7 +215,7 @@ db.partidos.aggregate([{ $group: { _id: null, ultima_fecha: { $max: "$fecha" } }
 db.partidos.updateMany({"campeonato": "Champions League"}, {"$unset": {"resultado": 1}})
 
 // 12) encontrar los jugadores cuyo equipo empieza con la letra "p"
-db.jugadores.find({ equipo: { $regex: /^p/i } })
+db.jugadores.find({ equipo: { $regex: "^p" } })
 
 // 13) eliminar todos los partidos jugados en "francia"
 db.partidos.deleteMany({ pais: "Francia" })
@@ -233,3 +233,53 @@ db.jugadores.find({ nacionalidad: { $ne: "argentina" } })
 // 5 valido
 // 7 MAL
 // 8 valido
+
+
+// eliminar el ultimo evento del array "eventos" del partido con _id: "1"
+db.partidos.updateOne(
+  { _id: "1" },
+  { $pop: { eventos: 1 } }
+);
+
+// jugadores que no tienen exactamente 34 años
+db.jugadores.find({ edad: { $ne: 34 } })
+
+// encontrar los jugadores cuyo nombre contenga la letra "i"
+db.jugadores.find({ nombre:/i/i })
+
+// monstrar el nombre y la edad de los jugadores
+db.jugadores.find({}).project({nombre:1, edad: 1})
+
+// encontrar los 3 paises con la mayor cantidad de partidos jugados
+db.partidos.aggregate([
+  {
+    $group: {
+      _id: "$pais",
+      total_partidos: { $sum: 1 }
+    }
+  },
+  { $sort: { total_partidos: -1 } },
+  { $limit: 3 }
+]);
+
+// contar cuantos partidos se han jugado en cada pais
+db.partidos.aggregate([
+  {
+    $group: {
+      _id: "$pais",
+      total_partidos: { $sum: 1 }
+    }
+  }
+]);
+
+// encontrar la cantidad de partidos donde hubo al menos una asistencia
+db.partidos.aggregate([
+  { $unwind: "$eventos" },
+  { $match: { "eventos.tipo": "asistencia" } },
+  { $group: { _id: "$_id" } },
+  { $count: "partidos_con_asistencia" }
+]);
+
+
+// encontrar los jugadores con menos de 300 asistencias
+

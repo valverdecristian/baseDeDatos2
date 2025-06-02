@@ -274,10 +274,11 @@ MongoDB no utiliza claves foráneas como en bases de datos relacionales, pero **
 ---
 
 ### 🔗 Tipos de relaciones
+MongoDB permite modelar tres tipos fundamentales de relaciones.
 
 #### 🔸 1. Uno a Uno (1:1)
 - Un documento está relacionado con exactamente uno de otra colección.
-- Puede representarse **embebiendo** el documento relacionado.
+- Puede representarse **embebiendo**/**incrustado** el documento relacionado. Tambien por referencia, es decir teniendo los dos documentos separados y en uno de los documentos tener un campo que relacione al otro.
 - 🧪 Ejemplo: un libro tiene un único autor:
 
 ```json
@@ -331,5 +332,6 @@ MongoDB no utiliza claves foráneas como en bases de datos relacionales, pero **
 - Documentos grandes embebidos pueden afectar el rendimiento.
 - En relaciones con muchos datos, los documentos embebidos se vuelven difíciles de mantener.
 - Requiere planificación cuidadosa para decidir cuándo embeber o referenciar.
+- MongoDB tiene limites en el tamaño de los documentos BSON, lo que puede limitar la cantidad de datos incrustados.
 
-## SECCION 4 del curso (29)
+## SECCION 6 del curso (36)

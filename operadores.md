@@ -57,7 +57,7 @@
 | `$[<identificador>]` | Placeholder para elementos que cumplen un filtro (`arrayFilters`) | `{ "items.$[item]": { $set: { estado: "ok" } } }` + `arrayFilters` |
 
 
-### 📍 Operadores de etapa en Agregación (`aggregate`)
+### 📍 Operadores de Agregación (`aggregate`)
 
 Los operadores de esta sección **solo se usan dentro de `aggregate()`**, formando parte de la tubería (`pipeline`).
 
@@ -76,3 +76,12 @@ Los operadores de esta sección **solo se usan dentro de `aggregate()`**, forman
 | `$addFields`    | Agrega nuevos campos al documento                            | `{ $addFields: { año_str: { $toString: "$year" } } }` |
 | `$replaceRoot`  | Reemplaza el documento completo por un subdocumento          | `{ $replaceRoot: { newRoot: "$detalles" } }` |
 | `$facet`        | Ejecuta múltiples pipelines paralelas                        | Usado para estadísticas múltiples |
+
+
+### 📍 Operadores de evaluación
+
+| Operador      | Función                                                                | Ejemplo                                                                                     |
+| ------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `$regex`      | Coincide con una expresión regular (búsqueda por patrones)             | `{ nombre: { $regex: /^A/i } } // Nombres que empiezan con "A"`                             |
+| `$expr`       | Permite usar expresiones de agregación en una consulta normal (`find`) | `{ $expr: { $gt: ["$edad", 30] } } // edad > 30`                                            |
+| `$jsonSchema` | Valida la estructura de los documentos según un esquema JSON           | `{ $jsonSchema: { required: ["nombre"], properties: { nombre: { bsonType: "string" } } } }` |
